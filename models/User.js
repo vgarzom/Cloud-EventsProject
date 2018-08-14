@@ -1,3 +1,5 @@
+var mongoose = require('mongoose');
+
 var UserSchema = new mongoose.Schema({
     email: String,
     name: String,
@@ -5,4 +7,4 @@ var UserSchema = new mongoose.Schema({
     created_date: {type: Date, default: Date.now}
 })
 
-module.exports = mongoose.model('User', EventSchema);
+module.exports = mongoose.model('User', UserSchema);
