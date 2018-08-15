@@ -27,8 +27,10 @@ export class RegisterComponent implements OnInit {
     console.log("Trying to register")
     this.http.post('/api/register', this.user).subscribe(data => {
       if (data["code"] != 200){
+        this.messages = []
         this.messages.push({type:"danger", text: data["message"]});  
       }else {
+        this.messages = []
         this.messages.push({type:"success", text: "Has sido registrado existosamente"})
         this.user = {
           name: "",

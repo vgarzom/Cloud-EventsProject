@@ -1,23 +1,24 @@
 <div class="main-container">
   <div class="clr-row clr-justify-content-end full-height clr-align-items-center">
     <div class="clr-col-sm-12 clr-col-md-6 clr-col-lg-4 register-container clr-align-self-center clr-justify-content-center">
-        <clr-alerts>
-            <clr-alert *ngFor="let message of messages" [clrAlertType]="message.type" [clrAlertAppLevel]="true">
-              <div class="alert-item">
-                <span class="alert-text">
-                        {{message.text}}
-                    </span>
-              </div>
-            </clr-alert>
-          </clr-alerts>
+      <clr-alerts>
+        <clr-alert *ngFor="let message of messages" [clrAlertType]="message.type" [clrAlertAppLevel]="true">
+          <div class="alert-item">
+            <span class="alert-text">
+              {{message.text}}
+            </span>
+          </div>
+        </clr-alert>
+      </clr-alerts>
 
       <section class="title">
         <h3 class="full-width">Bienvenido a</h3>
-        <h1 class="full-width">StayOnTime</h1>
+        <h1 class="full-width">OnTime</h1>
         <h5 class="hint full-width">La aplicación para estar a tiempo en todos tus eventos</h5>
       </section>
-      <br />
-      <br />
+      <form>
+        <br />
+        <br />
         <input type="text" id="nameField" placeholder="Nombre" class="register-input" [(ngModel)]="user.name">
         <input type="text" id="emailField" placeholder="Email" class="register-input" [(ngModel)]="user.email">
         <input type="password" id="passwordField" placeholder="Contraseña" class="register-input" [(ngModel)]="user.password">
@@ -26,6 +27,7 @@
         <button class="btn-block btn btn-primary" (click)="onRegister()">Registrar</button>
         <br />
         <a href="javascript://" class="signup">Ya estoy registrado</a>
+      </form>
     </div>
   </div>
 </div>
