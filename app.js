@@ -13,6 +13,7 @@ mongoose.connect('mongodb://localhost/events', { promiseLibrary: require('bluebi
 
 var event_route = require('./routes/event');
 var register_route = require('./routes/register');
+var login_route = require('./routes/login');
 
 var app = express();
 
@@ -21,8 +22,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ 'extended': 'false' }));
 app.use(express.static(path.join(__dirname, 'dist/event-project')));
 app.use('/register', express.static(path.join(__dirname, 'dist/event-project')));
+app.use('/login', express.static(path.join(__dirname, 'dist/event-project')));
 app.use('/event', event_route);
 app.use('/api/register', register_route);
+app.use('/api/login', login_route);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

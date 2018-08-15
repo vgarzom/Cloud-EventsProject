@@ -2,3 +2,15 @@
 .full-width {
     width: 100% !important;
 }
+
+.full-height {
+    height: 100% !important;
+}
+
+.blue-mosaic-color {
+    background-color: #007cbb;
+}
+
+.input-45p {
+    height: 3em !important;
+}

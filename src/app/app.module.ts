@@ -10,16 +10,22 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from './login/login.component';
 
 const appRoutes: Routes = [
   {
     path: 'register',
     component: RegisterComponent,
-    data: {title: 'Registrar en eventos'}
+    data: {title: 'Registrarse en OnTime'}
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+    data: {title: "Iniciar sesión en OnTime"}
   },
   {
     path: '',
-    redirectTo: '/register',
+    redirectTo: '/login',
     pathMatch: 'full'
   }
 ]
@@ -27,7 +33,8 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    RegisterComponent
+    RegisterComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
