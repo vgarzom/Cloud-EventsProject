@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-events-view',
@@ -8,19 +9,25 @@ import { Router } from '@angular/router';
 })
 export class EventsViewComponent implements OnInit {
   private _open = false;
+  private user: any;
+  private events : any = [];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private http: HttpClient) { }
 
   ngOnInit() {
-    if (localStorage.getItem("ontime_user") === null){
+    this.user = localStorage.getItem("ontime_user")
+    if (this.user === null) {
       this.router.navigateByUrl('/');
+    } else {
+      this.user = JSON.parse(this.user)
+      this.getAllEvents();
     }
   }
 
   get open() {
     return this._open
   }
-  
+
   set open(value: boolean) {
     this._open = value;
     if (!value) {
@@ -33,6 +40,15 @@ export class EventsViewComponent implements OnInit {
     this._open = false;
     localStorage.removeItem("ontime_user")
     this.router.navigateByUrl('/login');
+  }
+
+  private getAllEvents() {
+    this.http.get('/api/event/byuser/' + this.user["_id"], this.user).subscribe(data => {
+      if (data["code"] != 200) {
+      } else {
+        this.events = data["events"]
+      }
+    })
   }
 
 }

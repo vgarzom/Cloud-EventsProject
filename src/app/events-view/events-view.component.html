@@ -5,28 +5,40 @@
     OnTime
   </header>
   <div class="content-container">
-      <div class="content-area">
+    <div class="content-area">
+      <div class="clr-row clr-justify-content-center clr-align-items-center">
+        <div class="clr-col-4 not-events-found" *ngIf="events.length == 0">
+          <h2>No hemos encontrado ningún evento</h2>
+          <br />
+          <br />
+          <img src="assets/img/not_events_found.svg" alt="not_found">
+          <p>Que tal si empiezas creando uno?</p>
+          <br />
+          <br />
+          <button class="btn btn-success btn-block" (click)="onCreateEvent()">Crear evento</button>
+        </div>
       </div>
-      <nav class="sidenav">
-          <section class="sidenav-content">
-              <a href="events" class="nav-link active">
-                  Eventos
-              </a>
-              <a (click)="open = true" class="nav-link">
-                  Cerrar sesión
-              </a>
-          </section>
-      </nav>
+    </div>
+    <nav class="sidenav">
+      <section class="sidenav-content">
+        <a href="events" class="nav-link active">
+          Eventos
+        </a>
+        <a (click)="open = true" class="nav-link">
+          Cerrar sesión
+        </a>
+      </section>
+    </nav>
   </div>
 
   <clr-modal [(clrModalOpen)]="open">
-      <h3 class="modal-title">Se cerrará la sesión</h3>
-      <div class="modal-body">
-          <p>Confirmas que deseas cerrar sesión?</p>
-      </div>
-      <div class="modal-footer">
-          <button type="button" class="btn btn-outline" (click)="open = false">Cancelar</button>
-          <button type="button" class="btn btn-primary" (click)="onLogOut()">Cerrar sesión</button>
-      </div>
+    <h3 class="modal-title">Se cerrará la sesión</h3>
+    <div class="modal-body">
+      <p>Confirmas que deseas cerrar sesión?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="open = false">Cancelar</button>
+      <button type="button" class="btn btn-primary" (click)="onLogOut()">Cerrar sesión</button>
+    </div>
   </clr-modal>
 </div>
