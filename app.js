@@ -21,9 +21,12 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ 'extended': 'false' }));
 app.use(express.static(path.join(__dirname, 'dist/event-project')));
+
 app.use('/register', express.static(path.join(__dirname, 'dist/event-project')));
 app.use('/login', express.static(path.join(__dirname, 'dist/event-project')));
-app.use('/event', event_route);
+app.use('/events', express.static(path.join(__dirname, 'dist/event-project')));
+
+app.use('/api/event', event_route);
 app.use('/api/register', register_route);
 app.use('/api/login', login_route);
 

@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
+import { EventsViewComponent } from './events-view/events-view.component';
 
 const appRoutes: Routes = [
   {
@@ -24,6 +25,11 @@ const appRoutes: Routes = [
     data: {title: "Iniciar sesión en OnTime"}
   },
   {
+    path: 'events',
+    component: EventsViewComponent,
+    data: {title: "Eventos OnTime"}
+  },
+  {
     path: '',
     redirectTo: '/login',
     pathMatch: 'full'
@@ -34,7 +40,8 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    EventsViewComponent
   ],
   imports: [
     BrowserModule,

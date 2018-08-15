@@ -22,6 +22,9 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (localStorage.getItem("ontime_user") !== null){
+      this.router.navigateByUrl('/events');
+    }
   }
 
   onRegister() {
@@ -40,10 +43,6 @@ export class RegisterComponent implements OnInit {
         }
       }
     })
-  }
-
-  goToLogin(){
-    this.router.navigateByUrl('/login');
   }
 
 }

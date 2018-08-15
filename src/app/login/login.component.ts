@@ -15,11 +15,17 @@ export class LoginComponent implements OnInit {
     password: "",
     email: ""
   }
+  private currentUser : any
+
   constructor(private http: HttpClient, private router: Router) {
 
   }
 
   ngOnInit() {
+    this.currentUser = localStorage.getItem("ontime_user");
+    if (this.currentUser !== null && this.currentUser !== undefined){
+      this.router.navigateByUrl('/events');
+    }
   }
 
   onLogin() {
@@ -40,13 +46,10 @@ export class LoginComponent implements OnInit {
           password: "",
           email: ""
         }
-        console.log(JSON.stringify(data["user"]))
+        localStorage.setItem('ontime_user', JSON.stringify(data["user"]));
+        this.router.navigateByUrl('/events');
       }
     })
-  }
-
-  goToRegister() {
-    this.router.navigateByUrl('/register');
   }
 
 }
