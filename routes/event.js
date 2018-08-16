@@ -7,7 +7,7 @@ router.get('/byuser/:userid', function (req, res, next) {
   Event.find({ user_id: req.params.userid }, function (err, events) {
     if (err) res.json({ code: 100, message: err })
     else res.json({ code: 200, events: events })
-  })
+  }).sort('-created_date')
 });
 
 

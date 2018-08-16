@@ -14,14 +14,15 @@ export class EventsViewComponent implements OnInit {
   private user: any;
   private events: any = [];
   private newEvent: any = { durationType: "m" }
-  private _selectedEvent : any = null;
-  private currentEditingEvent : any = null;
+  private _selectedEvent: any = null;
+  private currentEditingEvent: any = null;
   private isEditingSelectedEvent = false;
   private isDeletingEvent = false;
   private canCreateEvent = false;
   private canUpdateEvent = false;
   editBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
+  createBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
 
   constructor(private router: Router, private http: HttpClient) { }
 
@@ -47,29 +48,32 @@ export class EventsViewComponent implements OnInit {
     }
   }
 
-  get selectedEvent(){
+  get selectedEvent() {
     return this._selectedEvent;
   }
 
-  set selectedEvent(value : any){
+  set selectedEvent(value: any) {
     this._selectedEvent = value;
-    this._selectedEvent.durationType = "m"
 
     this._selectedEvent.event_date = new Date(this._selectedEvent.event_date);
     console.log(this._selectedEvent.event_date);
-    
-    if (this._selectedEvent.duration > 60){
-      this._selectedEvent.durationType = "h"
-      this._selectedEvent.duration = this._selectedEvent.duration / 60;
+
+    if (this._selectedEvent.durationType === undefined) {
+      if (this._selectedEvent.duration > 60) {
+        this._selectedEvent.duration = this._selectedEvent.duration / 60;
+        this._selectedEvent.durationType = "h"
+      } else {
+        this._selectedEvent.durationType = "m"
+      }
     }
 
     this.currentEditingEvent = {
-      _id: this.selectedEvent._id,
-      name: this.selectedEvent.name,
-      description: this.selectedEvent.description,
-      event_date: this.selectedEvent.event_date,
-      duration: this.selectedEvent.duration,
-      durationType: this.selectedEvent.durationType
+      _id: this._selectedEvent._id,
+      name: this._selectedEvent.name,
+      description: this._selectedEvent.description,
+      event_date: this._selectedEvent.event_date,
+      duration: this._selectedEvent.duration,
+      durationType: this._selectedEvent.durationType
     }
   }
 
@@ -102,25 +106,28 @@ export class EventsViewComponent implements OnInit {
   }
 
   public onCreateEvent() {
+    this.createBtnState = ClrLoadingState.LOADING;
     if (this.newEvent.durationType === "h") {
       this.newEvent.duration = this.newEvent.duration * 60;
       this.newEvent.durationType = "m";
     }
     this.newEvent.user_id = this.user._id;
 
-    console.log(typeof(this.newEvent.event_date))
+    console.log(typeof (this.newEvent.event_date))
     this.http.post('api/event', this.newEvent).subscribe(data => {
-      if (data["code"] != 200){
+      if (data["code"] != 200) {
+        this.createBtnState = ClrLoadingState.ERROR;
         alert(data["message"])
-      }else {
-        this.events.push(data["event"])
+      } else {
+        this.createBtnState = ClrLoadingState.SUCCESS;
+        this.events.unshift(data["event"])
         this.canCreateEvent = false;
         this.isShowingEventCreation = false;
       }
     })
   }
 
-  public validateEvent(event:any) {
+  public validateEvent(event: any) {
     if (event.name !== undefined && event.name !== null && event.name !== "" &&
       event.description !== undefined && event.description !== null && event.description !== "" &&
       event.event_date !== undefined && event.event_date !== null && event.event_date !== "" &&
@@ -144,7 +151,7 @@ export class EventsViewComponent implements OnInit {
     }
   }
 
-  public onEditEvent(){
+  public onEditEvent() {
     this.editBtnState = ClrLoadingState.LOADING;
 
     if (this.currentEditingEvent.durationType === "h") {
@@ -153,11 +160,11 @@ export class EventsViewComponent implements OnInit {
     }
     this.currentEditingEvent.user_id = this.user._id;
 
-    this.http.put('api/event/'+this.currentEditingEvent._id, this.currentEditingEvent).subscribe(data => {
-      if (data["code"] != 200){
+    this.http.put('api/event/' + this.currentEditingEvent._id, this.currentEditingEvent).subscribe(data => {
+      if (data["code"] != 200) {
         alert(data["message"])
         this.editBtnState = ClrLoadingState.ERROR;
-      }else {
+      } else {
         this.editBtnState = ClrLoadingState.SUCCESS;
         this.selectedEvent.name = this.currentEditingEvent.name;
         this.selectedEvent.description = this.currentEditingEvent.description;
@@ -167,17 +174,21 @@ export class EventsViewComponent implements OnInit {
     })
   }
 
-  public onDeleteEvent(){
-    this.http.delete('api/event/'+this.selectedEvent._id, this.selectedEvent).subscribe(data => {
-      if (data["code"] != 200){
+  public onDeleteEvent() {
+    this.http.delete('api/event/' + this.selectedEvent._id, this.selectedEvent).subscribe(data => {
+      if (data["code"] != 200) {
         alert(data["message"]);
         this.deleteBtnState = ClrLoadingState.ERROR;
-      }else {
+      } else {
         this.deleteBtnState = ClrLoadingState.SUCCESS;
         this.events.splice(this.events.indexOf(this._selectedEvent), 1);
         this.isDeletingEvent = false;
         this._selectedEvent = null;
       }
     })
+  }
+
+  public deSelectEvent() {
+    this._selectedEvent = null;
   }
 }

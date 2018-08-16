@@ -1,9 +1,19 @@
 <div class="main-container">
   <div class="alert alert-app-level">
   </div>
-  <header class="header header-6">
-    OnTime
-  </header>
+  <header class="header-5">
+      <div class="branding">
+          <div class="nav-link">
+              <clr-icon shape="alarm-clock"></clr-icon>
+              <span class="title">OnTime</span>
+          </div>
+      </div>
+      <div class="header-actions">
+        <a class="nav-link nav-icon" (click)="isShowingEventCreation = true" *ngIf="!isEditingSelectedEvent">
+          <clr-icon shape="plus"></clr-icon>
+        </a>
+      </div>
+    </header>
   <div class="content-container full-height">
     <nav class="sidenav">
       <section class="sidenav-content">
@@ -16,7 +26,7 @@
       </section>
     </nav>
     <div class="content-area not-padding">
-      <div class="clr-row clr-justify-content-center">
+      <div class="clr-row clr-justify-content-center full-height">
         <div class="clr-col-4 not-events-found padding" *ngIf="events.length == 0">
           <h2>No hemos encontrado ningún evento</h2>
           <br />
@@ -57,6 +67,9 @@
               <a class="nav-link nav-icon" (click)="isDeletingEvent = true" *ngIf="!isEditingSelectedEvent">
                   <clr-icon shape="trash"></clr-icon>
                 </a>
+                <a class="nav-link nav-icon" (click)="deSelectEvent()" *ngIf="!isEditingSelectedEvent">
+                    <clr-icon shape="window-close"></clr-icon>
+                  </a>
             </div>
           </header>
           <div class="padding">
@@ -152,7 +165,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline" (click)="isShowingEventCreation = false">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="onCreateEvent()" [disabled]="!validateEvent(newEvent)">Crear Evento</button>
+        <button type="button" [clrLoading]="createBtnState" class="btn btn-primary" (click)="onCreateEvent()" [disabled]="!validateEvent(newEvent)">Crear Evento</button>
       </div>
     </clr-modal>
   </div>
