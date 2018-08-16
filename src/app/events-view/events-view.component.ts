@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { ClrLoadingState } from '@clr/angular';
 
 @Component({
   selector: 'app-events-view',
@@ -16,8 +17,11 @@ export class EventsViewComponent implements OnInit {
   private _selectedEvent : any = null;
   private currentEditingEvent : any = null;
   private isEditingSelectedEvent = false;
+  private isDeletingEvent = false;
   private canCreateEvent = false;
   private canUpdateEvent = false;
+  editBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
+  deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
 
   constructor(private router: Router, private http: HttpClient) { }
 
@@ -51,10 +55,7 @@ export class EventsViewComponent implements OnInit {
     this._selectedEvent = value;
     this._selectedEvent.durationType = "m"
 
-    console.log(typeof(this._selectedEvent.event_date));
-    console.log(this._selectedEvent.event_date);
-    this._selectedEvent.event_date = this._selectedEvent.event_date.toString();
-    console.log(typeof(this._selectedEvent.event_date));
+    this._selectedEvent.event_date = new Date(this._selectedEvent.event_date);
     console.log(this._selectedEvent.event_date);
     
     if (this._selectedEvent.duration > 60){
@@ -144,6 +145,8 @@ export class EventsViewComponent implements OnInit {
   }
 
   public onEditEvent(){
+    this.editBtnState = ClrLoadingState.LOADING;
+
     if (this.currentEditingEvent.durationType === "h") {
       this.currentEditingEvent.duration = this.currentEditingEvent.duration * 60;
       this.currentEditingEvent.durationType = "m";
@@ -153,12 +156,27 @@ export class EventsViewComponent implements OnInit {
     this.http.put('api/event/'+this.currentEditingEvent._id, this.currentEditingEvent).subscribe(data => {
       if (data["code"] != 200){
         alert(data["message"])
+        this.editBtnState = ClrLoadingState.ERROR;
       }else {
-        let index = this.events.indexOf(this._selectedEvent);
+        this.editBtnState = ClrLoadingState.SUCCESS;
         this.selectedEvent.name = this.currentEditingEvent.name;
         this.selectedEvent.description = this.currentEditingEvent.description;
         this.selectedEvent.event_date = this.currentEditingEvent.event_date;
         this.selectedEvent.duration = this.currentEditingEvent.duration;
+      }
+    })
+  }
+
+  public onDeleteEvent(){
+    this.http.delete('api/event/'+this.selectedEvent._id, this.selectedEvent).subscribe(data => {
+      if (data["code"] != 200){
+        alert(data["message"]);
+        this.deleteBtnState = ClrLoadingState.ERROR;
+      }else {
+        this.deleteBtnState = ClrLoadingState.SUCCESS;
+        this.events.splice(this.events.indexOf(this._selectedEvent), 1);
+        this.isDeletingEvent = false;
+        this._selectedEvent = null;
       }
     })
   }

@@ -40,7 +40,7 @@ router.put('/:id', function(req, res, next) {
 
 /* Eliminar un evento */
 router.delete('/:id', function(req, res, next) {
-  Book.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+  Event.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) res.json({code: 400, message: "No fue posible eliminar el evento"});
     else res.json({code: 200, event: post});
   });

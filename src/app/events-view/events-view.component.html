@@ -54,6 +54,9 @@
               <a class="nav-link nav-icon" (click)="isEditingSelectedEvent = true" *ngIf="!isEditingSelectedEvent">
                 <clr-icon shape="pencil"></clr-icon>
               </a>
+              <a class="nav-link nav-icon" (click)="isDeletingEvent = true" *ngIf="!isEditingSelectedEvent">
+                  <clr-icon shape="trash"></clr-icon>
+                </a>
             </div>
           </header>
           <div class="padding">
@@ -82,7 +85,7 @@
               </div>
               <div class="modal-footer" *ngIf="isEditingSelectedEvent">
                   <button type="button" class="btn btn-outline" (click)="cancelEdition()">Cancelar</button>
-                  <button type="button" class="btn btn-primary" (click)="onEditEvent()" [disabled]="!validateEvent(currentEditingEvent)">Editar Evento</button>
+                  <button [clrLoading]="editBtnState" type="button" class="btn btn-primary" (click)="onEditEvent()" [disabled]="!validateEvent(currentEditingEvent)">Editar Evento</button>
                 </div>
             </form>
           </div>
@@ -105,6 +108,17 @@
         <button type="button" class="btn btn-primary" (click)="onLogOut()">Cerrar sesión</button>
       </div>
     </clr-modal>
+
+    <clr-modal [(clrModalOpen)]="isDeletingEvent">
+        <h3 class="modal-title">Eliminar evento</h3>
+        <div class="modal-body">
+          <p>Confirmas que deseas eliminar el evento? Esta acción no se puede revertir.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" (click)="isDeletingEvent = false">Cancelar</button>
+          <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="onDeleteEvent()">Eliminar evento</button>
+        </div>
+      </clr-modal>
 
     <clr-modal [(clrModalOpen)]="isShowingEventCreation" [clrModalClosable]="false">
       <h3 class="modal-title">Crear nuevo evento</h3>
