@@ -66,25 +66,20 @@ export class EventsViewComponent implements OnInit {
   set selectedEvent(value: any) {
     this._selectedEvent = value;
 
-    this._selectedEvent.event_date = new Date(this._selectedEvent.event_date);
     console.log(this._selectedEvent.event_date);
-
-    if (this._selectedEvent.durationType === undefined) {
-      if (this._selectedEvent.duration > 60) {
-        this._selectedEvent.duration = this._selectedEvent.duration / 60;
-        this._selectedEvent.durationType = "h"
-      } else {
-        this._selectedEvent.durationType = "m"
-      }
-    }
 
     this.currentEditingEvent = {
       _id: this._selectedEvent._id,
       name: this._selectedEvent.name,
       description: this._selectedEvent.description,
-      event_date: this._selectedEvent.event_date,
+      event_date: new Date(this._selectedEvent.event_date).toISOString().slice(0, 16),
       duration: this._selectedEvent.duration,
-      durationType: this._selectedEvent.durationType
+      durationType: "m"
+    }
+
+    if (this.currentEditingEvent.duration > 60) {
+      this.currentEditingEvent.duration = this._selectedEvent.duration / 60;
+      this.currentEditingEvent.durationType = "h"
     }
   }
 
@@ -130,9 +125,9 @@ export class EventsViewComponent implements OnInit {
         this.createBtnState = ClrLoadingState.ERROR;
         alert(data["message"])
         this.messages.push({ type: "danger", text: data["message"] });
-        
+
       } else {
-        this.messages.push({ type: "success", text: "El evento \""+this.newEvent.name+"\" fue creado exitosamente" });
+        this.messages.push({ type: "success", text: "El evento \"" + this.newEvent.name + "\" fue creado exitosamente" });
         this.createBtnState = ClrLoadingState.SUCCESS;
         this.events.unshift(data["event"])
         this.canCreateEvent = false;
@@ -173,15 +168,17 @@ export class EventsViewComponent implements OnInit {
       this.currentEditingEvent.durationType = "m";
     }
     this.currentEditingEvent.user_id = this.user._id;
+    this.currentEditingEvent.event_date = this.currentEditingEvent.event_date + ":00.000Z";
 
     this.http.put('api/event/' + this.currentEditingEvent._id, this.currentEditingEvent).subscribe(data => {
+
       if (data["code"] != 200) {
         alert(data["message"])
         this.messages.push({ type: "danger", text: data["message"] });
         this.editBtnState = ClrLoadingState.ERROR;
       } else {
 
-        this.messages.push({ type: "success", text: "El evento \""+this.selectedEvent.name+"\" fue actualizado exitosamente" });
+        this.messages.push({ type: "success", text: "El evento \"" + this.selectedEvent.name + "\" fue actualizado exitosamente" });
         this.editBtnState = ClrLoadingState.SUCCESS;
         this.selectedEvent.name = this.currentEditingEvent.name;
         this.selectedEvent.description = this.currentEditingEvent.description;
@@ -189,6 +186,9 @@ export class EventsViewComponent implements OnInit {
         this.selectedEvent.duration = this.currentEditingEvent.duration;
         this.isEditingSelectedEvent = false;
       }
+
+
+      this.currentEditingEvent.event_date = this.currentEditingEvent.event_date.slice(0, 16);
     })
   }
 
@@ -199,7 +199,7 @@ export class EventsViewComponent implements OnInit {
         this.messages.push({ type: "danger", text: data["message"] });
         this.deleteBtnState = ClrLoadingState.ERROR;
       } else {
-        this.messages.push({ type: "success", text: "El evento \""+this.selectedEvent.name+"\" fue eliminado exitosamente" });
+        this.messages.push({ type: "success", text: "El evento \"" + this.selectedEvent.name + "\" fue eliminado exitosamente" });
         this.deleteBtnState = ClrLoadingState.SUCCESS;
         this.events.splice(this.events.indexOf(this._selectedEvent), 1);
         this.isDeletingEvent = false;
@@ -213,10 +213,9 @@ export class EventsViewComponent implements OnInit {
   }
 
   get mustShowTable() {
-    console.log("Must show table ? --> "+this.screenWidth);
-    if (this.screenWidth < 1200 && this.selectedEvent != null){
+    if (this.screenWidth < 1200 && this.selectedEvent != null) {
       return false;
-    }else {
+    } else {
       return true;
     }
   }
