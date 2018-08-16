@@ -18,3 +18,7 @@
 .padding {
     padding: 2em !important;
 }
+
+.col-center-text {
+    text-align: center;
+}

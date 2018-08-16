@@ -1,21 +1,27 @@
-<div class="main-container">
+<clr-main-container>
   <div class="alert alert-app-level">
   </div>
-  <header class="header-5">
-      <div class="branding">
-          <div class="nav-link">
-              <clr-icon shape="alarm-clock"></clr-icon>
-              <span class="title">OnTime</span>
-          </div>
+
+  <clr-header class="header-5">
+    <div class="branding">
+      <div class="nav-link">
+        <clr-icon shape="alarm-clock"></clr-icon>
+        <span class="title">OnTime</span>
       </div>
-      <div class="header-actions">
-        <a class="nav-link nav-icon" (click)="isShowingEventCreation = true" *ngIf="!isEditingSelectedEvent">
-          <clr-icon shape="plus"></clr-icon>
-        </a>
-      </div>
-    </header>
+    </div>
+
+    <div class="header-actions clr-align-items-center">
+      <button type="button" class="btn btn-icon btn-primary" (click)="isShowingEventCreation = true">
+        <clr-icon shape="plus"></clr-icon>
+        Crear evento
+      </button>
+    </div>
+  </clr-header>
+
   <div class="content-container full-height">
-    <nav class="sidenav">
+
+
+    <nav class="sidenav" [clr-nav-level]="1">
       <section class="sidenav-content">
         <a href="events" class="nav-link active">
           Eventos
@@ -25,17 +31,17 @@
         </a>
       </section>
     </nav>
+
     <div class="content-area not-padding">
       <div class="clr-row clr-justify-content-center full-height">
-        <div class="clr-col-4 not-events-found padding" *ngIf="events.length == 0">
-          <h2>No hemos encontrado ningún evento</h2>
-          <br />
-          <br />
+        <div class="clr-col not-events-found padding clr-align-self-center col-center-text" *ngIf="events.length == 0">
+          <h2>No hemos encontrado ningún evento</h2> 
           <img src="assets/img/not_events_found.svg" alt="not_found">
           <p>Que tal si empiezas creando uno?</p>
           <br />
-          <br />
-          <button class="btn btn-success btn-block" (click)="isShowingEventCreation = true">Crear evento</button>
+          <button class="btn btn-icon btn-primary" (click)="isShowingEventCreation = true">
+              <clr-icon shape="plus"></clr-icon>
+              Crear evento</button>
         </div>
 
         <div class="clr-col padding" *ngIf="events.length > 0">
@@ -65,11 +71,11 @@
                 <clr-icon shape="pencil"></clr-icon>
               </a>
               <a class="nav-link nav-icon" (click)="isDeletingEvent = true" *ngIf="!isEditingSelectedEvent">
-                  <clr-icon shape="trash"></clr-icon>
-                </a>
-                <a class="nav-link nav-icon" (click)="deSelectEvent()" *ngIf="!isEditingSelectedEvent">
-                    <clr-icon shape="window-close"></clr-icon>
-                  </a>
+                <clr-icon shape="trash"></clr-icon>
+              </a>
+              <a class="nav-link nav-icon" (click)="deSelectEvent()" *ngIf="!isEditingSelectedEvent">
+                <clr-icon shape="window-close"></clr-icon>
+              </a>
             </div>
           </header>
           <div class="padding">
@@ -97,75 +103,75 @@
                 </div>
               </div>
               <div class="modal-footer" *ngIf="isEditingSelectedEvent">
-                  <button type="button" class="btn btn-outline" (click)="cancelEdition()">Cancelar</button>
-                  <button [clrLoading]="editBtnState" type="button" class="btn btn-primary" (click)="onEditEvent()" [disabled]="!validateEvent(currentEditingEvent)">Editar Evento</button>
-                </div>
+                <button type="button" class="btn btn-outline" (click)="cancelEdition()">Cancelar</button>
+                <button [clrLoading]="editBtnState" type="button" class="btn btn-primary" (click)="onEditEvent()" [disabled]="!validateEvent(currentEditingEvent)">Editar
+                  Evento
+                </button>
+              </div>
             </form>
           </div>
         </div>
-
-
       </div>
-
-
-
     </div>
-
-    <clr-modal [(clrModalOpen)]="open">
-      <h3 class="modal-title">Se cerrará la sesión</h3>
-      <div class="modal-body">
-        <p>Confirmas que deseas cerrar sesión?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="open = false">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="onLogOut()">Cerrar sesión</button>
-      </div>
-    </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isDeletingEvent">
-        <h3 class="modal-title">Eliminar evento</h3>
-        <div class="modal-body">
-          <p>Confirmas que deseas eliminar el evento? Esta acción no se puede revertir.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline" (click)="isDeletingEvent = false">Cancelar</button>
-          <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="onDeleteEvent()">Eliminar evento</button>
-        </div>
-      </clr-modal>
-
-    <clr-modal [(clrModalOpen)]="isShowingEventCreation" [clrModalClosable]="false">
-      <h3 class="modal-title">Crear nuevo evento</h3>
-      <div class="modal-body">
-        <p>Ingresa los siguientes datos para tu evento:</p>
-        <form clrForm clrLayout="horizontal">
-          <div class="form-group">
-            <label for="eventNameInput" class="required">Nombre:</label>
-            <input type="text" id="eventNameInput" size="35" [(ngModel)]="newEvent.name" name="name" >
-          </div>
-          <div class="form-group">
-            <label for="eventDescriptionInput" class="required">Descripción:</label>
-            <textarea id="eventDescriptionInput" rows="3" [(ngModel)]="newEvent.description" name="description" ></textarea>
-          </div>
-          <div class="form-group">
-            <label for="eventDate" class="required">Fecha del evento:</label>
-            <input type="datetime-local" id="eventDate" size="35" [(ngModel)]="newEvent.event_date" name="event_date" >
-          </div>
-          <div class="form-group">
-            <label for="eventDuration" class="required">Duración del evento:</label>
-            <input type="number" id="eventDuration" size="35" [(ngModel)]="newEvent.duration" name="duration">
-            <div class="select">
-              <select id="exampleSelect1" [(ngModel)]="newEvent.durationType" name="duration_type">
-                <option value="m">Minutos</option>
-                <option value="h">Horas</option>
-              </select>
-            </div>
-          </div>
-        </form>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="isShowingEventCreation = false">Cancelar</button>
-        <button type="button" [clrLoading]="createBtnState" class="btn btn-primary" (click)="onCreateEvent()" [disabled]="!validateEvent(newEvent)">Crear Evento</button>
-      </div>
-    </clr-modal>
   </div>
+</clr-main-container>
+
+<clr-modal [(clrModalOpen)]="open">
+  <h3 class="modal-title">Se cerrará la sesión</h3>
+  <div class="modal-body">
+    <p>Confirmas que deseas cerrar sesión?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="open = false">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="onLogOut()">Cerrar sesión</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="isDeletingEvent">
+  <h3 class="modal-title">Eliminar evento</h3>
+  <div class="modal-body">
+    <p>Confirmas que deseas eliminar el evento? Esta acción no se puede revertir.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="isDeletingEvent = false">Cancelar</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="onDeleteEvent()">Eliminar evento</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="isShowingEventCreation" [clrModalClosable]="false">
+  <h3 class="modal-title">Crear nuevo evento</h3>
+  <div class="modal-body">
+    <p>Ingresa los siguientes datos para tu evento:</p>
+    <form clrForm clrLayout="horizontal">
+      <div class="form-group">
+        <label for="eventNameInput" class="required">Nombre:</label>
+        <input type="text" id="eventNameInput" size="35" [(ngModel)]="newEvent.name" name="name">
+      </div>
+      <div class="form-group">
+        <label for="eventDescriptionInput" class="required">Descripción:</label>
+        <textarea id="eventDescriptionInput" rows="3" [(ngModel)]="newEvent.description" name="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="eventDate" class="required">Fecha del evento:</label>
+        <input type="datetime-local" id="eventDate" size="35" [(ngModel)]="newEvent.event_date" name="event_date">
+      </div>
+      <div class="form-group">
+        <label for="eventDuration" class="required">Duración del evento:</label>
+        <input type="number" id="eventDuration" size="35" [(ngModel)]="newEvent.duration" name="duration">
+        <div class="select">
+          <select id="exampleSelect1" [(ngModel)]="newEvent.durationType" name="duration_type">
+            <option value="m">Minutos</option>
+            <option value="h">Horas</option>
+          </select>
+        </div>
+      </div>
+    </form>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="isShowingEventCreation = false">Cancelar</button>
+    <button type="button" [clrLoading]="createBtnState" class="btn btn-primary" (click)="onCreateEvent()" [disabled]="!validateEvent(newEvent)">Crear
+      Evento
+    </button>
+  </div>
+</clr-modal>
