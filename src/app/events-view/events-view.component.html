@@ -4,21 +4,7 @@
   <header class="header header-6">
     OnTime
   </header>
-  <div class="content-container">
-    <div class="content-area">
-      <div class="clr-row clr-justify-content-center clr-align-items-center">
-        <div class="clr-col-4 not-events-found" *ngIf="events.length == 0">
-          <h2>No hemos encontrado ningún evento</h2>
-          <br />
-          <br />
-          <img src="assets/img/not_events_found.svg" alt="not_found">
-          <p>Que tal si empiezas creando uno?</p>
-          <br />
-          <br />
-          <button class="btn btn-success btn-block" (click)="isShowingEventCreation = true">Crear evento</button>
-        </div>
-      </div>
-    </div>
+  <div class="content-container full-height">
     <nav class="sidenav">
       <section class="sidenav-content">
         <a href="events" class="nav-link active">
@@ -29,52 +15,130 @@
         </a>
       </section>
     </nav>
-  </div>
+    <div class="content-area not-padding">
+      <div class="clr-row clr-justify-content-center">
+        <div class="clr-col-4 not-events-found padding" *ngIf="events.length == 0">
+          <h2>No hemos encontrado ningún evento</h2>
+          <br />
+          <br />
+          <img src="assets/img/not_events_found.svg" alt="not_found">
+          <p>Que tal si empiezas creando uno?</p>
+          <br />
+          <br />
+          <button class="btn btn-success btn-block" (click)="isShowingEventCreation = true">Crear evento</button>
+        </div>
 
-  <clr-modal [(clrModalOpen)]="open">
-    <h3 class="modal-title">Se cerrará la sesión</h3>
-    <div class="modal-body">
-      <p>Confirmas que deseas cerrar sesión?</p>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline" (click)="open = false">Cancelar</button>
-      <button type="button" class="btn btn-primary" (click)="onLogOut()">Cerrar sesión</button>
-    </div>
-  </clr-modal>
+        <div class="clr-col padding" *ngIf="events.length > 0">
+          <h1>Todos tus Eventos</h1>
+          <clr-datagrid [(clrDgSingleSelected)]="selectedEvent" [clDgRowSelection]="true">
+            <clr-dg-column>Nombre</clr-dg-column>
+            <clr-dg-column>Fecha del evento</clr-dg-column>
+            <clr-dg-column>Creado</clr-dg-column>
 
-  <clr-modal [(clrModalOpen)]="isShowingEventCreation" [clrModalClosable]="false">
-    <h3 class="modal-title">Crear nuevo evento</h3>
-    <div class="modal-body">
-      <p>Ingresa los siguientes datos para tu evento:</p>
-      <form clrForm clrLayout="horizontal">
-        <div class="form-group">
-          <label for="eventNameInput" class="required">Nombre:</label>
-          <input type="text" id="eventNameInput" size="35" [(ngModel)]="newEvent.name" name="name" (ngModelChange)="validateEventCreation()">
+            <clr-dg-row *clrDgItems="let event of events" [clrDgItem]="event">
+              <clr-dg-cell>{{event.name}}</clr-dg-cell>
+              <clr-dg-cell>{{event.event_date | date}}</clr-dg-cell>
+              <clr-dg-cell>{{event.created_date | date}}</clr-dg-cell>
+            </clr-dg-row>
+
+            <clr-dg-footer>{{events.length}} Eventos creados</clr-dg-footer>
+          </clr-datagrid>
         </div>
-        <div class="form-group">
-          <label for="eventDescriptionInput" class="required">Descripción:</label>
-          <textarea id="eventDescriptionInput" rows="3" [(ngModel)]="newEvent.description" name="description" (ngModelChange)="validateEventCreation()"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="eventDate" class="required">Fecha del evento:</label>
-            <input type="datetime-local" id="eventDate" size="35" [(ngModel)]="newEvent.event_date" name="event_date" (ngModelChange)="validateEventCreation()">
-        </div>
-        <div class="form-group">
-            <label for="eventDuration" class="required">Duración del evento:</label>
-            <input type="number" id="eventDuration" size="35" [(ngModel)]="newEvent.duration" name="duration" (ngModelChange)="validateEventCreation()">
-            <div class="select">
-                <select id="exampleSelect1" [(ngModel)]="newEvent.durationType" name="duration_type">
+
+        <div class="clr-col-5 not-padding full-height details-container" *ngIf="selectedEvent !== undefined && selectedEvent !== null">
+          <header class="header-4">
+            <div class="branding">
+              <span class="title">Detalles del evento</span>
+            </div>
+            <div class="header-actions">
+              <a class="nav-link nav-icon" (click)="isEditingSelectedEvent = true" *ngIf="!isEditingSelectedEvent">
+                <clr-icon shape="pencil"></clr-icon>
+              </a>
+            </div>
+          </header>
+          <div class="padding">
+            <form clrForm clrLayout="horizontal">
+              <div class="form-group">
+                <label for="eventNameInput" class="required">Nombre:</label>
+                <input type="text" id="eventNameInput" size="35" [(ngModel)]="currentEditingEvent.name" name="name" [readonly]="!isEditingSelectedEvent">
+              </div>
+              <div class="form-group">
+                <label for="eventDescriptionInput" class="required">Descripción:</label>
+                <textarea id="eventDescriptionInput" rows="3" [(ngModel)]="currentEditingEvent.description" name="description" [readonly]="!isEditingSelectedEvent"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="eventDate" class="required">Fecha del evento:</label>
+                <input type="datetime-local" id="eventDate" size="35" [(ngModel)]="currentEditingEvent.event_date" name="event_date" [readonly]="!isEditingSelectedEvent">
+              </div>
+              <div class="form-group">
+                <label for="eventDuration" class="required">Duración del evento:</label>
+                <input type="number" id="eventDuration" size="35" [(ngModel)]="currentEditingEvent.duration" name="duration" [readonly]="!isEditingSelectedEvent">
+                <div class="select">
+                  <select id="exampleSelect1" [(ngModel)]="currentEditingEvent.durationType" name="duration_type">
                     <option value="m">Minutos</option>
                     <option value="h">Horas</option>
-                </select>
-            </div>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer" *ngIf="isEditingSelectedEvent">
+                  <button type="button" class="btn btn-outline" (click)="cancelEdition()">Cancelar</button>
+                  <button type="button" class="btn btn-primary" (click)="onEditEvent()" [disabled]="!validateEvent(currentEditingEvent)">Editar Evento</button>
+                </div>
+            </form>
+          </div>
         </div>
-      </form>
+
+
+      </div>
+
+
 
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline" (click)="isShowingEventCreation = false">Cancelar</button>
-      <button type="button" class="btn btn-primary" (click)="onCreateEvent()" [disabled]="!canCreateEvent">Crear Evento</button>
-    </div>
-  </clr-modal>
-</div>
+
+    <clr-modal [(clrModalOpen)]="open">
+      <h3 class="modal-title">Se cerrará la sesión</h3>
+      <div class="modal-body">
+        <p>Confirmas que deseas cerrar sesión?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="open = false">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="onLogOut()">Cerrar sesión</button>
+      </div>
+    </clr-modal>
+
+    <clr-modal [(clrModalOpen)]="isShowingEventCreation" [clrModalClosable]="false">
+      <h3 class="modal-title">Crear nuevo evento</h3>
+      <div class="modal-body">
+        <p>Ingresa los siguientes datos para tu evento:</p>
+        <form clrForm clrLayout="horizontal">
+          <div class="form-group">
+            <label for="eventNameInput" class="required">Nombre:</label>
+            <input type="text" id="eventNameInput" size="35" [(ngModel)]="newEvent.name" name="name" >
+          </div>
+          <div class="form-group">
+            <label for="eventDescriptionInput" class="required">Descripción:</label>
+            <textarea id="eventDescriptionInput" rows="3" [(ngModel)]="newEvent.description" name="description" ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="eventDate" class="required">Fecha del evento:</label>
+            <input type="datetime-local" id="eventDate" size="35" [(ngModel)]="newEvent.event_date" name="event_date" >
+          </div>
+          <div class="form-group">
+            <label for="eventDuration" class="required">Duración del evento:</label>
+            <input type="number" id="eventDuration" size="35" [(ngModel)]="newEvent.duration" name="duration">
+            <div class="select">
+              <select id="exampleSelect1" [(ngModel)]="newEvent.durationType" name="duration_type">
+                <option value="m">Minutos</option>
+                <option value="h">Horas</option>
+              </select>
+            </div>
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="isShowingEventCreation = false">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="onCreateEvent()" [disabled]="!validateEvent(newEvent)">Crear Evento</button>
+      </div>
+    </clr-modal>
+  </div>

@@ -3,10 +3,18 @@
     width: 100%;
 }
 
+.not-padding{
+    padding: 0px !important;
+}
+
 h2 {
     text-align: center
 }
 
 p {
     text-align: center
+}
+
+.details-container {
+    background-color: white;
 }

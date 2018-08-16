@@ -13,7 +13,11 @@ export class EventsViewComponent implements OnInit {
   private user: any;
   private events: any = [];
   private newEvent: any = { durationType: "m" }
-  private canCreateEvent = false
+  private _selectedEvent : any = null;
+  private currentEditingEvent : any = null;
+  private isEditingSelectedEvent = false;
+  private canCreateEvent = false;
+  private canUpdateEvent = false;
 
   constructor(private router: Router, private http: HttpClient) { }
 
@@ -36,6 +40,35 @@ export class EventsViewComponent implements OnInit {
     if (!value) {
       // Put your cleanup code here
       console.log("Cleaning up");
+    }
+  }
+
+  get selectedEvent(){
+    return this._selectedEvent;
+  }
+
+  set selectedEvent(value : any){
+    this._selectedEvent = value;
+    this._selectedEvent.durationType = "m"
+
+    console.log(typeof(this._selectedEvent.event_date));
+    console.log(this._selectedEvent.event_date);
+    this._selectedEvent.event_date = this._selectedEvent.event_date.toString();
+    console.log(typeof(this._selectedEvent.event_date));
+    console.log(this._selectedEvent.event_date);
+    
+    if (this._selectedEvent.duration > 60){
+      this._selectedEvent.durationType = "h"
+      this._selectedEvent.duration = this._selectedEvent.duration / 60;
+    }
+
+    this.currentEditingEvent = {
+      _id: this.selectedEvent._id,
+      name: this.selectedEvent.name,
+      description: this.selectedEvent.description,
+      event_date: this.selectedEvent.event_date,
+      duration: this.selectedEvent.duration,
+      durationType: this.selectedEvent.durationType
     }
   }
 
@@ -74,7 +107,7 @@ export class EventsViewComponent implements OnInit {
     }
     this.newEvent.user_id = this.user._id;
 
-    console.log(JSON.stringify(this.newEvent))
+    console.log(typeof(this.newEvent.event_date))
     this.http.post('api/event', this.newEvent).subscribe(data => {
       if (data["code"] != 200){
         alert(data["message"])
@@ -86,15 +119,47 @@ export class EventsViewComponent implements OnInit {
     })
   }
 
-  public validateEventCreation() {
-    if (this.newEvent.name !== undefined && this.newEvent.name !== null && this.newEvent.name !== "" &&
-      this.newEvent.description !== undefined && this.newEvent.description !== null && this.newEvent.description !== "" &&
-      this.newEvent.event_date !== undefined && this.newEvent.event_date !== null && this.newEvent.event_date !== "" &&
-      this.newEvent.duration !== undefined && this.newEvent.duration !== null && this.newEvent.duration !== "") {
+  public validateEvent(event:any) {
+    if (event.name !== undefined && event.name !== null && event.name !== "" &&
+      event.description !== undefined && event.description !== null && event.description !== "" &&
+      event.event_date !== undefined && event.event_date !== null && event.event_date !== "" &&
+      event.duration !== undefined && event.duration !== null && event.duration !== "") {
 
-      this.canCreateEvent = true;
+      return true;
     } else {
-      this.canCreateEvent = false;
+      return false;
     }
+  }
+
+  public cancelEdition() {
+    this.isEditingSelectedEvent = false;
+    this.currentEditingEvent = {
+      _id: this.selectedEvent._id,
+      name: this.selectedEvent.name,
+      description: this.selectedEvent.description,
+      event_date: this.selectedEvent.event_date,
+      duration: this.selectedEvent.duration,
+      durationType: this.selectedEvent.durationType
+    }
+  }
+
+  public onEditEvent(){
+    if (this.currentEditingEvent.durationType === "h") {
+      this.currentEditingEvent.duration = this.currentEditingEvent.duration * 60;
+      this.currentEditingEvent.durationType = "m";
+    }
+    this.currentEditingEvent.user_id = this.user._id;
+
+    this.http.put('api/event/'+this.currentEditingEvent._id, this.currentEditingEvent).subscribe(data => {
+      if (data["code"] != 200){
+        alert(data["message"])
+      }else {
+        let index = this.events.indexOf(this._selectedEvent);
+        this.selectedEvent.name = this.currentEditingEvent.name;
+        this.selectedEvent.description = this.currentEditingEvent.description;
+        this.selectedEvent.event_date = this.currentEditingEvent.event_date;
+        this.selectedEvent.duration = this.currentEditingEvent.duration;
+      }
+    })
   }
 }
