@@ -19,7 +19,9 @@ router.post('/', function (req, res, next) {
         return
     }
 
-    User.find({ email: req.body.email, password: req.body.password }, function (err, users) {
+    var email = req.body.email.toLowerCase();
+
+    User.find({ email: email, password: req.body.password }, function (err, users) {
         if (err) res.json({ code: 100, message: err })
         if (users.length > 0) {
             res.json({ code: 200, user: users[0] })

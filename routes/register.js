@@ -24,7 +24,9 @@ router.post('/', function (req, res, next) {
         return
     }
 
-    User.find({ email: req.body.email }, function (err, users) {
+    var email = req.body.email.toLowerCase();
+
+    User.find({ email: email }, function (err, users) {
         if (err) res.json({ code: 100, message: err })
         if (users.length > 0) {
             res.json({ code: 100, message: "Lo sentimos, ya existe un usuario con dicho email" })

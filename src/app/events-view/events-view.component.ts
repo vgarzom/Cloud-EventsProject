@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ClrLoadingState } from '@clr/angular';
+import { HostListener } from "@angular/core";
 
 @Component({
   selector: 'app-events-view',
@@ -9,6 +10,14 @@ import { ClrLoadingState } from '@clr/angular';
   styleUrls: ['./events-view.component.css']
 })
 export class EventsViewComponent implements OnInit {
+  public messages: any = [];
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event?) {
+    this.screenWidth = window.innerWidth;
+  }
+
+  private screenWidth = 0
   private _open = false;
   private _isShowingEventCreation = false;
   private user: any;
@@ -24,7 +33,9 @@ export class EventsViewComponent implements OnInit {
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   createBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
 
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient) {
+    this.onResize();
+  }
 
   ngOnInit() {
     this.user = localStorage.getItem("ontime_user")
@@ -118,7 +129,10 @@ export class EventsViewComponent implements OnInit {
       if (data["code"] != 200) {
         this.createBtnState = ClrLoadingState.ERROR;
         alert(data["message"])
+        this.messages.push({ type: "danger", text: data["message"] });
+        
       } else {
+        this.messages.push({ type: "success", text: "El evento \""+this.newEvent.name+"\" fue creado exitosamente" });
         this.createBtnState = ClrLoadingState.SUCCESS;
         this.events.unshift(data["event"])
         this.canCreateEvent = false;
@@ -163,13 +177,17 @@ export class EventsViewComponent implements OnInit {
     this.http.put('api/event/' + this.currentEditingEvent._id, this.currentEditingEvent).subscribe(data => {
       if (data["code"] != 200) {
         alert(data["message"])
+        this.messages.push({ type: "danger", text: data["message"] });
         this.editBtnState = ClrLoadingState.ERROR;
       } else {
+
+        this.messages.push({ type: "success", text: "El evento \""+this.selectedEvent.name+"\" fue actualizado exitosamente" });
         this.editBtnState = ClrLoadingState.SUCCESS;
         this.selectedEvent.name = this.currentEditingEvent.name;
         this.selectedEvent.description = this.currentEditingEvent.description;
         this.selectedEvent.event_date = this.currentEditingEvent.event_date;
         this.selectedEvent.duration = this.currentEditingEvent.duration;
+        this.isEditingSelectedEvent = false;
       }
     })
   }
@@ -178,8 +196,10 @@ export class EventsViewComponent implements OnInit {
     this.http.delete('api/event/' + this.selectedEvent._id, this.selectedEvent).subscribe(data => {
       if (data["code"] != 200) {
         alert(data["message"]);
+        this.messages.push({ type: "danger", text: data["message"] });
         this.deleteBtnState = ClrLoadingState.ERROR;
       } else {
+        this.messages.push({ type: "success", text: "El evento \""+this.selectedEvent.name+"\" fue eliminado exitosamente" });
         this.deleteBtnState = ClrLoadingState.SUCCESS;
         this.events.splice(this.events.indexOf(this._selectedEvent), 1);
         this.isDeletingEvent = false;
@@ -190,5 +210,14 @@ export class EventsViewComponent implements OnInit {
 
   public deSelectEvent() {
     this._selectedEvent = null;
+  }
+
+  get mustShowTable() {
+    console.log("Must show table ? --> "+this.screenWidth);
+    if (this.screenWidth < 1200 && this.selectedEvent != null){
+      return false;
+    }else {
+      return true;
+    }
   }
 }

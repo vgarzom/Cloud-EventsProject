@@ -9,6 +9,8 @@
 
 .blue-mosaic-color {
     background-color: #007cbb;
+    background-image: url("assets/img/pattern.png");
+    background-repeat: repeat;
 }
 
 .input-45p {

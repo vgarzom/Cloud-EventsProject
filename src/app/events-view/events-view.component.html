@@ -1,6 +1,5 @@
 <clr-main-container>
-  <div class="alert alert-app-level">
-  </div>
+
 
   <clr-header class="header-5">
     <div class="branding">
@@ -33,18 +32,29 @@
     </nav>
 
     <div class="content-area not-padding">
+
+      <clr-alerts>
+        <clr-alert *ngFor="let message of messages" [clrAlertType]="message.type" [clrAlertAppLevel]="true">
+          <div class="alert-item">
+            <span class="alert-text">
+              {{message.text}}
+            </span>
+          </div>
+        </clr-alert>
+      </clr-alerts>
+
       <div class="clr-row clr-justify-content-center full-height">
         <div class="clr-col not-events-found padding clr-align-self-center col-center-text" *ngIf="events.length == 0">
-          <h2>No hemos encontrado ningún evento</h2> 
+          <h2>No hemos encontrado ningún evento</h2>
           <img src="assets/img/not_events_found.svg" alt="not_found">
-          <p>Que tal si empiezas creando uno?</p>
+          <p>Que tal si creas uno?</p>
           <br />
           <button class="btn btn-icon btn-primary" (click)="isShowingEventCreation = true">
-              <clr-icon shape="plus"></clr-icon>
-              Crear evento</button>
+            <clr-icon shape="plus"></clr-icon>
+            Crear evento</button>
         </div>
 
-        <div class="clr-col padding" *ngIf="events.length > 0">
+        <div class="clr-col padding" *ngIf="events.length > 0 && mustShowTable">
           <h1>Todos tus Eventos</h1>
           <clr-datagrid [(clrDgSingleSelected)]="selectedEvent" [clDgRowSelection]="true">
             <clr-dg-column>Nombre</clr-dg-column>
@@ -61,7 +71,7 @@
           </clr-datagrid>
         </div>
 
-        <div class="clr-col-5 not-padding full-height details-container" *ngIf="selectedEvent !== undefined && selectedEvent !== null">
+        <div class="clr-col-xl-5 clr-col-lg-12 not-padding full-height details-container" *ngIf="selectedEvent !== undefined && selectedEvent !== null">
           <header class="header-4">
             <div class="branding">
               <span class="title">Detalles del evento</span>
