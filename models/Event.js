@@ -6,7 +6,10 @@ var EventSchema = new mongoose.Schema({
     description: String,
     created_date: {type: Date, default: Date.now},
     event_date: {type: Date, default: Date.now},
-    duration: Number
+    duration: Number,
+    category: String,
+    place: String,
+    type: String
 })
 
 module.exports = mongoose.model('Event', EventSchema);

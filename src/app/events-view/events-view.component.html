@@ -106,9 +106,33 @@
                 <label for="eventDuration" class="required">Duración del evento:</label>
                 <input type="number" id="eventDuration" size="35" [(ngModel)]="currentEditingEvent.duration" name="duration" [readonly]="!isEditingSelectedEvent">
                 <div class="select">
-                  <select id="exampleSelect1" [(ngModel)]="currentEditingEvent.durationType" name="duration_type">
+                  <select id="exampleSelect1" [(ngModel)]="currentEditingEvent.durationType" name="duration_type" [disabled]="!isEditingSelectedEvent">
                     <option value="m">Minutos</option>
                     <option value="h">Horas</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="eventCategory" class="required">Categoría:</label>
+                <div class="select">
+                  <select id="selectCategory" [(ngModel)]="currentEditingEvent.category" name="category" [disabled]="!isEditingSelectedEvent">
+                    <option value="conference">Conferencia</option>
+                    <option value="seminary">Seminario</option>
+                    <option value="congress">Congreso</option>
+                    <option value="course">Curso</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="eventPlaceInput" class="required">Lugar:</label>
+                <input type="text" id="eventPlaceInput" size="35" [(ngModel)]="currentEditingEvent.place" name="place">
+              </div>
+              <div class="form-group">
+                <label for="eventType" class="required">Tipo:</label>
+                <div class="select">
+                  <select id="selectType" [(ngModel)]="currentEditingEvent.type" name="type" [disabled]="!isEditingSelectedEvent">
+                    <option value="p">Presencial</option>
+                    <option value="v">Virtual</option>
                   </select>
                 </div>
               </div>
@@ -172,6 +196,30 @@
           <select id="exampleSelect1" [(ngModel)]="newEvent.durationType" name="duration_type">
             <option value="m">Minutos</option>
             <option value="h">Horas</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="eventCategory" class="required">Categoría:</label>
+        <div class="select">
+          <select id="selectCategory" [(ngModel)]="newEvent.category" name="category">
+            <option value="conference">Conferencia</option>
+            <option value="seminary">Seminario</option>
+            <option value="congress">Congreso</option>
+            <option value="course">Curso</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="eventPlaceInput" class="required">Lugar:</label>
+        <input type="text" id="eventPlaceInput" size="35" [(ngModel)]="newEvent.place" name="place">
+      </div>
+      <div class="form-group">
+        <label for="eventType" class="required">Tipo:</label>
+        <div class="select">
+          <select id="selectType" [(ngModel)]="newEvent.type" name="type">
+            <option value="p">Presencial</option>
+            <option value="v">Virtual</option>
           </select>
         </div>
       </div>

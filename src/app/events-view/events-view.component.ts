@@ -22,7 +22,7 @@ export class EventsViewComponent implements OnInit {
   private _isShowingEventCreation = false;
   private user: any;
   private events: any = [];
-  private newEvent: any = { durationType: "m" }
+  private newEvent: any = { durationType: "m", category: "conference", type: "p" }
   private _selectedEvent: any = null;
   private currentEditingEvent: any = null;
   private isEditingSelectedEvent = false;
@@ -74,7 +74,10 @@ export class EventsViewComponent implements OnInit {
       description: this._selectedEvent.description,
       event_date: new Date(this._selectedEvent.event_date).toISOString().slice(0, 16),
       duration: this._selectedEvent.duration,
-      durationType: "m"
+      durationType: "m",
+      category: this._selectedEvent.category,
+      place: this._selectedEvent.place,
+      type: this._selectedEvent.type
     }
 
     if (this.currentEditingEvent.duration > 60) {
@@ -92,7 +95,7 @@ export class EventsViewComponent implements OnInit {
     if (!value) {
       // Put your cleanup code here
       console.log("Cleaning up");
-      this.newEvent = { durationType: "m" }
+      this.newEvent = { durationType: "m", category: "conference", type: "p" }
     }
   }
 
@@ -140,7 +143,8 @@ export class EventsViewComponent implements OnInit {
     if (event.name !== undefined && event.name !== null && event.name !== "" &&
       event.description !== undefined && event.description !== null && event.description !== "" &&
       event.event_date !== undefined && event.event_date !== null && event.event_date !== "" &&
-      event.duration !== undefined && event.duration !== null && event.duration !== "") {
+      event.duration !== undefined && event.duration !== null && event.duration !== "" &&
+      event.place !== undefined && event.place !== null && event.place !== "") {
 
       return true;
     } else {
@@ -156,7 +160,10 @@ export class EventsViewComponent implements OnInit {
       description: this.selectedEvent.description,
       event_date: this.selectedEvent.event_date,
       duration: this.selectedEvent.duration,
-      durationType: this.selectedEvent.durationType
+      durationType: this.selectedEvent.durationType,
+      category: this.selectedEvent.category,
+      place: this.selectedEvent.place,
+      type: this.selectedEvent.type
     }
   }
 
@@ -184,6 +191,10 @@ export class EventsViewComponent implements OnInit {
         this.selectedEvent.description = this.currentEditingEvent.description;
         this.selectedEvent.event_date = this.currentEditingEvent.event_date;
         this.selectedEvent.duration = this.currentEditingEvent.duration;
+        
+        this.selectedEvent.category = this.currentEditingEvent.category,
+        this.selectedEvent.place = this.currentEditingEvent.place,
+        this.selectedEvent.type = this.currentEditingEvent.type
         this.isEditingSelectedEvent = false;
       }
 
