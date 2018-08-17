@@ -22,7 +22,7 @@ export class EventsViewComponent implements OnInit {
   private _isShowingEventCreation = false;
   private user: any;
   private events: any = [];
-  private newEvent: any = { durationType: "m", category: "conference", type: "p" }
+  private newEvent: any = { durationType: "m", category: "conference", type: "p", event_date: new Date().toISOString().slice(0, 16) }
   private _selectedEvent: any = null;
   private currentEditingEvent: any = null;
   private isEditingSelectedEvent = false;
@@ -95,7 +95,7 @@ export class EventsViewComponent implements OnInit {
     if (!value) {
       // Put your cleanup code here
       console.log("Cleaning up");
-      this.newEvent = { durationType: "m", category: "conference", type: "p" }
+      this.newEvent = { durationType: "m", category: "conference", type: "p", event_date: new Date().toISOString().slice(0, 16) }
     }
   }
 
@@ -121,8 +121,8 @@ export class EventsViewComponent implements OnInit {
       this.newEvent.durationType = "m";
     }
     this.newEvent.user_id = this.user._id;
-
-    console.log(typeof (this.newEvent.event_date))
+    this.newEvent.event_date = this.newEvent.event_date + ":00.000Z";
+    console.log(this.newEvent.event_date)
     this.http.post('api/event', this.newEvent).subscribe(data => {
       if (data["code"] != 200) {
         this.createBtnState = ClrLoadingState.ERROR;
