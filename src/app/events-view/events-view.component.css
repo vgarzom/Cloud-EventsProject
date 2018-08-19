@@ -10,3 +10,18 @@
 .details-container {
     background-color: white;
 }
+
+
+.img-avatar {
+    border: 5px solid  #007cbb;
+    max-width: 100%;
+    width: 100px;
+    height: auto;
+    border-radius: 1000px;
+
+}
+
+.sidenav-header {
+    text-align: center;
+    padding: 2em;
+}

@@ -21,6 +21,12 @@
 
 
     <nav class="sidenav" [clr-nav-level]="1">
+      <section class="sidenav-header">
+        <a target="_blank" rel="noopener noreferrer" href="http://es.gravatar.com/">
+          <img src="https://www.gravatar.com/avatar/{{hashemail}}?s=250" class="img-avatar" alt="{{user.email}}" />
+        </a>
+        <p><b>Hola</b><br />{{user.name}}</p>
+      </section>
       <section class="sidenav-content">
         <a href="events" class="nav-link active">
           Eventos

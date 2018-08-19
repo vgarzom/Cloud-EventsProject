@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ClrLoadingState } from '@clr/angular';
 import { HostListener } from "@angular/core";
+import { Md5 } from 'ts-md5/dist/md5';
 
 @Component({
   selector: 'app-events-view',
@@ -11,6 +12,9 @@ import { HostListener } from "@angular/core";
 })
 export class EventsViewComponent implements OnInit {
   public messages: any = [];
+
+  public hashemail;
+
 
   @HostListener('window:resize', ['$event'])
   onResize(event?) {
@@ -42,7 +46,9 @@ export class EventsViewComponent implements OnInit {
     if (this.user === null) {
       this.router.navigateByUrl('/');
     } else {
-      this.user = JSON.parse(this.user)
+      this.user = JSON.parse(this.user);
+      var md5 = new Md5();
+      this.hashemail = md5.appendStr(this.user.email).end();
       this.getAllEvents();
     }
   }
@@ -191,10 +197,10 @@ export class EventsViewComponent implements OnInit {
         this.selectedEvent.description = this.currentEditingEvent.description;
         this.selectedEvent.event_date = this.currentEditingEvent.event_date;
         this.selectedEvent.duration = this.currentEditingEvent.duration;
-        
+
         this.selectedEvent.category = this.currentEditingEvent.category,
-        this.selectedEvent.place = this.currentEditingEvent.place,
-        this.selectedEvent.type = this.currentEditingEvent.type
+          this.selectedEvent.place = this.currentEditingEvent.place,
+          this.selectedEvent.type = this.currentEditingEvent.type
         this.isEditingSelectedEvent = false;
       }
 
