@@ -125,7 +125,7 @@
               </div>
               <div class="form-group">
                 <label for="eventPlaceInput" class="required">Lugar:</label>
-                <input type="text" id="eventPlaceInput" size="35" [(ngModel)]="currentEditingEvent.place" name="place">
+                <input type="text" id="eventPlaceInput" size="35" [(ngModel)]="currentEditingEvent.place" name="place" [readonly]="!isEditingSelectedEvent">
               </div>
               <div class="form-group">
                 <label for="eventType" class="required">Tipo:</label>
